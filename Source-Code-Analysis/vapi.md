@@ -24,7 +24,7 @@ C++通用代码由vapi.hpp提供，并包含高级API模板，这些模板由gen
 
 这些代码可以被用户端应用程序引用，以实现与vpp的便捷通信。它们包括：
 
-* 自动字节交换（byte-swapping）
+* 自动字节序交换（byte-swapping）
 * 基于上下文（context）的自动请求-响应（request-response）匹配
 * 调用回调时自动强制转换为适当的类型（类型安全）
 * 自动为dump message发送control-pings
@@ -67,14 +67,14 @@ vapi_show_version(message, callback, callback_context)
 2. 将消息转换为网络字节顺序
 3. 向vpp发送消息（消息已被消费，vpp将释放它）
 4. 创建内部“outstanding request context”，其中存储了回调，回调上下文和内部上下文值
-5. 调用 dispatch,呼叫分派，其作用是接收并处理响应，直到内部“outstanding requests”队列为空。 在阻止模式下，此队列始终最多包含一个项目
+5. 调用 dispatch，其作用是接收并处理响应，直到内部“outstanding requests”队列为空。 在阻止模式下，此队列始终最多包含一个项目
 ```
 
 **注意**：在某些情况下，可能会在调用响应回调之前调用不同的-不相关的回调，例如event存储在共享内存队列中。
 
 #### 非阻塞模式
 
-在非阻塞模式下，所有请求仅被字节交换（byte-swapped），上下文信息和回调一起存储在本地（因此，在以上示例中，仅执行步骤1-4，而跳过了步骤5）。 调用dispatch取决于客户端应用程序。 这允许在发送/接收消息之间交替变换或具有专用线程来调用dispatch。
+在非阻塞模式下，所有请求仅被字节序交换（byte-swapped），上下文信息和回调一起存储在本地（因此，在以上示例中，仅执行步骤1-4，而跳过了步骤5）。 调用dispatch取决于客户端应用程序。 这允许在发送/接收消息之间交替变换或具有专用线程来调用dispatch。
 
 ### C++ high level API
 
